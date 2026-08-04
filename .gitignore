@@ -1,6 +1,7 @@
 # Intermediate map-build artefacts (regenerate with tools/, see README)
 tools/*.geojson
 tools/data.json
+tools/chk*.js
 tools/check.js
 tools/__pycache__/
 
