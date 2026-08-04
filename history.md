@@ -37,6 +37,12 @@ Kök neden: Kodda hata yoktu. WhatsApp (ve iOS "Dosyalar" uygulaması) HTML dosy
 Çözüm: Dosyayı mesajlaşma uygulamasıyla dağıtmak yerine web'de yayınla. GitHub Pages açıldı: https://kaptanlimonata.github.io/map-quiz/ (repo public olmak zorunda; ücretsiz planda özel repolarda Pages çalışmaz). Ayrıca teşhis için sayfaya `<noscript>` uyarısı, açılışta placeholder'ı değiştiren bir kanıt satırı ve `window.onerror`'u ekrana basan görünür hata kutusu eklendi.
 Kural: Telefonda konsol yok; JS'in çalışıp çalışmadığını ayırt edecek görünür bir sinyal olmadan bu tür donmalar teşhis edilemez.
 
+2026-08-04 · Mobilde kaydırma "ölü" hissettiriyordu
+Sorun: Telefonda parmakla kaydırınca harita hareket etmiyor ya da çok az hareket ediyordu.
+Kök neden: `clampCam` içinde "dünya ekrandan küçükse kamerayı ortala" kuralı vardı. 375x812 telefonda varsayılan zoom'da bu koşul HER İKİ eksende de sağlanıyordu (halfW=0.50, halfH=1.08), yani kamera tamamen kilitliydi; dikey kaydırma ancak ~2.2x zoom'dan sonra açılıyordu. Ayrıca sürükleme eşiği (7px) aşıldığı anda yalnızca son adımın deltası uygulandığı için her kaydırmanın ilk 7px'i yutuluyordu.
+Çözüm: Ortalama zorlaması kaldırıldı, yalnızca kamera merkezi [0,1] içinde tutuluyor. Eşik aşıldığında parmağın bastığı andan itibaren toplam delta uygulanıyor. Ayrıca atalet (flick-to-glide) eklendi. Ölçüm: yatay ve dikeyde oran 1.00 (90px parmak -> 90px harita), hızlı bırakışta 117px ek kayma, yavaş bırakışta 0.
+"Performans/FPS sorunu" sanılıyordu, değildi; kare hızı zaten 69 FPS idi.
+
 2026-08-04 · Tarayıcı sekmesi gizliyken canvas boş ölçülüyor
 Sorun: Canlı sitede harita piksel taraması 0 kara pikseli verdi, hata yokken.
 Kök neden: Önizleme paneli görünmediğinde sayfa `document.hidden = true` olur ve `requestAnimationFrame` hiç ateşlenmez; çizim rAF içinde olduğu için canvas hiç boyanmaz. Kod sağlamdı.

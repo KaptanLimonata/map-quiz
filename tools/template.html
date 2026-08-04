@@ -433,14 +433,14 @@ function resize() {
 
 function clampCam() {
   cam.s = Math.max(minS, Math.min(maxS, cam.s));
-  var halfW = W / (2 * cam.s), halfH = H / (2 * cam.s);
-  // If the world is smaller than the viewport, centre it. Otherwise only keep
-  // the centre of the view on the map: pinning the edges instead would make it
-  // impossible to centre on Hawaii, Alaska or New Zealand.
-  if (halfW >= 0.5) cam.x = 0.5;
-  else cam.x = Math.max(0, Math.min(1, cam.x));
-  if (halfH >= 0.5) cam.y = HOME_Y;
-  else cam.y = Math.max(0, Math.min(1, cam.y));
+  // Keep only the camera centre over the map. Two earlier rules were worse:
+  // pinning the map edges to the screen edges made it impossible to centre on
+  // Hawaii or New Zealand, and snapping back to the middle whenever the world
+  // was smaller than the viewport made dragging feel dead - on a 375x812 phone
+  // at the default zoom that held on both axes, so panning did nothing at all
+  // until you had zoomed past ~2.2x.
+  cam.x = Math.max(0, Math.min(1, cam.x));
+  cam.y = Math.max(0, Math.min(1, cam.y));
 }
 
 function toScreen(wx, wy) {
@@ -734,6 +734,7 @@ var anim = null;
 function easeInOut(t) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
 
 function flyTo(x, y, s, ms) {
+  glide = null;
   anim = { fx: cam.x, fy: cam.y, fs: cam.s, tx: x, ty: y, ts: s,
            t0: performance.now(), dur: ms || 600 };
 }
@@ -747,6 +748,41 @@ function focusCountry(c, tight) {
   // never zoom out just to show a huge country
   if (s < cam.s && Math.max(c.w, c.h) * cam.s < Math.min(W, H) * 0.8) s = cam.s;
   flyTo(c.pt[0], c.pt[1], s, 700);
+}
+
+/* Flick-to-glide. Without it a drag stops dead the instant the finger lifts,
+   which reads as heavy and unresponsive next to any native map. */
+var glide = null;
+var vel = { x: 0, y: 0, t: 0 };
+
+function trackVelocity(dx, dy, now) {
+  var dt = now - vel.t;
+  vel.t = now;
+  if (dt <= 0 || dt > 120) { vel.x = 0; vel.y = 0; return; }
+  var k = 0.45;                       // smooth so one jittery sample can't fling
+  vel.x = vel.x * (1 - k) + (dx / dt) * k;
+  vel.y = vel.y * (1 - k) + (dy / dt) * k;
+}
+
+function startGlide(now) {
+  if (now - vel.t > 90) return;       // finger paused before lifting: no throw
+  if (Math.abs(vel.x) < 0.12 && Math.abs(vel.y) < 0.12) return;
+  glide = { vx: vel.x, vy: vel.y, t: now };
+}
+
+function stepGlide(now) {
+  if (!glide) return false;
+  var dt = Math.min(now - glide.t, 40);
+  glide.t = now;
+  if (dt <= 0) return true;
+  cam.x -= glide.vx * dt / cam.s;
+  cam.y -= glide.vy * dt / cam.s;
+  var decay = Math.pow(0.9965, dt);
+  glide.vx *= decay;
+  glide.vy *= decay;
+  clampCam();
+  if (Math.abs(glide.vx) < 0.02 && Math.abs(glide.vy) < 0.02) glide = null;
+  return true;
 }
 
 function stepAnim(now) {
@@ -781,6 +817,8 @@ canvas.addEventListener('pointerdown', function (e) {
     dragged = false; downAt = performance.now();
     downPos = { x: e.clientX, y: e.clientY };
     anim = null;
+    glide = null;                       // touching down catches the map
+    vel.x = 0; vel.y = 0; vel.t = downAt;
   } else if (pointers.size === 2) {
     var pts = [].concat(Array.from(pointers.values()));
     pinch = {
@@ -824,11 +862,19 @@ canvas.addEventListener('pointermove', function (e) {
     var dx = cur.x - prev.x, dy = cur.y - prev.y;
     if (!dragged && downPos) {
       var md = Math.hypot(cur.x - downPos.x, cur.y - downPos.y);
-      if (md > 7) dragged = true;
+      if (md > 7) {
+        dragged = true;
+        // Move by everything since the finger went down. Using only this
+        // step's delta would silently swallow the first 7px of every drag,
+        // which reads as the map lagging behind the finger.
+        dx = cur.x - downPos.x;
+        dy = cur.y - downPos.y;
+      }
     }
     if (dragged) {
       cam.x -= dx / cam.s;
       cam.y -= dy / cam.s;
+      trackVelocity(dx, dy, performance.now());
       clampCam(); dirty = true;
     }
   }
@@ -839,6 +885,8 @@ function endPointer(e) {
   pointers.delete(e.pointerId);
   if (pointers.size < 2) pinch = null;
   if (!had) return;
+
+  if (pointers.size === 0 && dragged) startGlide(performance.now());
 
   if (pointers.size === 0 && !dragged && downPos) {
     var now = performance.now();
@@ -870,7 +918,7 @@ function zoomAt(sx, sy, factor) {
   cam.x += before[0] - after[0];
   cam.y += before[1] - after[1];
   clampCam(); dirty = true;
-  anim = null;
+  anim = null; glide = null;
 }
 
 // iOS Safari still fires these on the page; keep the map from fighting them
@@ -1083,6 +1131,7 @@ if (window.visualViewport) {
 
 function loop(now) {
   if (stepAnim(now)) dirty = true;
+  if (stepGlide(now)) dirty = true;
   if (focusId) dirty = true;         // pulse keeps animating
   if (now < flashUntil) dirty = true;
   if (dirty) { draw(now); dirty = false; }
