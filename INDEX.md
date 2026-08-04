@@ -5,9 +5,6 @@ Oyna: https://kaptanlimonata.github.io/map-quiz/ (GitHub Pages, main dalından y
 Teslim: `world-map-quiz.html` (207 KB, tek dosya, offline da çalışır).
 Repo: https://github.com/KaptanLimonata/map-quiz (public)
 
-Telefonda dosyayı mesajlaşma uygulamasıyla göndermek işe yaramaz; WhatsApp ve iOS
-"Dosyalar" önizlemesi JavaScript çalıştırmaz. Yukarıdaki link kullanılmalı (bkz. history.md).
-
 Rastgele sorulan ülkeyi dünya haritasında bulma oyunu; masaüstü, mobil ve iOS.
 İstenen 9 gereksinimin tamamı karşılandı (özellik listesi: README.md).
 Veri hattı kuruldu ve çalışır durumda: Natural Earth 50m -> 197 ülke -> mapshaper %18
@@ -19,7 +16,9 @@ Veri hattı kuruldu ve çalışır durumda: Natural Earth 50m -> 197 ülke -> ma
 - Coğrafi veri: 35 şehirden 33'ü doğru ülkede (2 sapma kıyı şehri, oynanışı etkilemiyor);
   197/197 iç nokta kendi poligonunda
 - Akıcılık: dünya görünümü 69 FPS, zoom'da 137 FPS (kaydırma sırasında gerçek kare süresi)
-- Oyun akışı ve TR/EN geçişi geçti; konsol hatası ve hata ayıklama kodu yok
+- Oyun akışı ve TR/EN geçişi geçti; konsol hatası yok
+- Açılış hatası olursa ekranda görünür kutuda raporlanıyor (telefonda konsol yok);
+  yapay hata tetiklenerek doğrulandı
 
 ## Dosyalar
 - `world-map-quiz.html` - teslim edilen oyun
@@ -33,3 +32,4 @@ Veri hattı kuruldu ve çalışır durumda: Natural Earth 50m -> 197 ülke -> ma
   cevap verirken komşu seçilebilir; zoom yapınca düzelir. Aranan ülke her zaman doğru seçilir.
 - Kıyı çizgileri %18 basitleştirilmiş; çok yüksek zoomda hafif köşeli görünür.
 - Portrait telefonda tüm dünya gösterildiğinde üst/alt boşluk kalır (Mercator kare oranı).
+- Telefona dosyayı doğrudan göndermek çalışmaz; yukarıdaki link kullanılmalı (neden: history.md).
