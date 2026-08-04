@@ -1,0 +1,10 @@
+# Intermediate map-build artefacts (regenerate with tools/, see README)
+tools/*.geojson
+tools/data.json
+tools/check.js
+tools/__pycache__/
+
+# OS noise
+Thumbs.db
+desktop.ini
+.DS_Store
