@@ -1,46 +1,26 @@
 # World Map Quiz - INDEX
 
 ## Durum: TAMAMLANDI (2026-08-04)
-Teslim edilen dosya: `world-map-quiz.html` (205 KB, tek dosya, offline çalışır).
-Repo: https://github.com/KaptanLimonata/map-quiz (private) · main @ 88f2d02
+Teslim: `world-map-quiz.html` (205 KB, tek dosya, offline).
+Repo: https://github.com/KaptanLimonata/map-quiz (private) · main @ 85a4a3c
 
-## Hedef
-Rastgele sorulan ülkeyi dünya haritasında bulma oyunu. Masaüstü, mobil ve iOS Safari.
-Tüm harita verisi HTML içine gömülü; internet veya kurulum gerekmez.
+Rastgele sorulan ülkeyi dünya haritasında bulma oyunu; masaüstü, mobil ve iOS.
+İstenen 9 gereksinimin tamamı karşılandı (özellik listesi: README.md).
+Veri hattı kuruldu ve çalışır durumda: Natural Earth 50m -> 197 ülke -> mapshaper %18
+-> 17.7k nokta -> HTML içine gömme (tools/, adımlar README'de).
 
-## Gereksinimler ve karşılanma durumu
-1. Üstte her zaman görünen overlay, aranan ülke adı - tamam
-2. Ülkeler rastgele, tekrarsız sırayla - tamam
-3. Altta "Geç" butonu - tamam
-4. 2 yanlış tıklamada doğruyu göster - tamam (ülkeye uçar, işaretler)
-5. Rahat zoom/pan (pinch, tekerlek, çift dokunma, +/- butonları) - tamam
-6. Estetik CSS - tamam (koyu okyanus teması, cam efektli paneller)
-7. 194-200 ülke - 197 (193 BM üyesi + Vatikan, Tayvan, Kosova, Filistin)
-8. Çok küçük ülkeler için tıklanabilir daireler - tamam
-9. Doğru bilinen ülke yeşil yanıp beyaza döner ve öyle kalır - tamam
-
-## Adımlar
-- [x] 1. Ortam tespiti -> environment.md
-- [x] 2. Natural Earth 50m verisi, 197 ülke seçimi + Somaliland/KKTC/Hong Kong/Makao birleştirme
-- [x] 3. Basitleştirme (mapshaper %18) ve kompakt kodlama -> 17.7k nokta, 170 KB veri
-- [x] 4. Canvas renderer, Mercator projeksiyon, pan/zoom
-- [x] 5. Quiz mantığı, skor, dil değiştirici, bitiş ekranı
-- [x] 6. CSS tasarım ve overlay
-- [x] 7. Doğrulama (aşağıda)
-
-## Doğrulama sonuçları
-- Coğrafi veri: 35 bilinen şehirden 33'ü doğru ülkede (2 sapma kıyı şehri, basitleştirme
-  kaynaklı, oynanışı etkilemiyor); 197/197 ülkenin iç noktası kendi poligonu içinde
-- Hit test (mobil 375x812, tüm dünya görünümü): aranan ülke 197/197 ulaşılabilir,
-  yanlış tıklamalar 197/197 doğru adlandırılıyor, okyanus tıklamaları etkisiz
-- Oyun akışı: doğru cevap / iki yanlış / geç / beyaz kalıcılık / dil değiştirme - hepsi geçti
-- Performans (pan sırasında, gerçek frame süresi): dünya görünümü 69 FPS, zoom'da 137 FPS
-- Konsol hatası yok; teslim dosyasında hata ayıklama kodu yok
+## Doğrulama (tarayıcıda çalıştırıldı)
+- Tıklama: aranan ülke 197/197 ulaşılabilir, yanlış tıklamalar 197/197 doğru
+  adlandırılıyor, okyanus etkisiz (mobil 375x812, tüm dünya görünümü)
+- Coğrafi veri: 35 şehirden 33'ü doğru ülkede (2 sapma kıyı şehri, oynanışı etkilemiyor);
+  197/197 iç nokta kendi poligonunda
+- Akıcılık: dünya görünümü 69 FPS, zoom'da 137 FPS (kaydırma sırasında gerçek kare süresi)
+- Oyun akışı ve TR/EN geçişi geçti; konsol hatası ve hata ayıklama kodu yok
 
 ## Dosyalar
 - `world-map-quiz.html` - teslim edilen oyun
-- `tools/` - veriyi yeniden üreten pipeline (step1..step4 + template.html)
-- `README.md` - kullanım ve yeniden üretme talimatı
+- `tools/` - veriyi yeniden üreten hat (step1..step4 + template.html; asıl kaynak template)
+- `README.md` - kullanım, yeniden üretme, detay/hız dengesi tablosu
 - `environment.md` - araç zinciri ve veri kaynağı notları
 - `history.md` - kök neden kayıtları
 
