@@ -174,6 +174,17 @@
     background:linear-gradient(180deg,rgba(87,209,255,.2),rgba(87,209,255,.08));
     border-color:rgba(87,209,255,.36)}
 
+  /* ---------- fatal error / no-script notice ---------- */
+  #fatal,.fatal{
+    position:fixed;left:12px;right:12px;top:50%;transform:translateY(-50%);
+    z-index:100;max-height:72vh;overflow:auto;
+    background:#2b1016;border:1px solid #ff6b6b;color:#ffdcdc;
+    border-radius:16px;padding:16px 18px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:12.5px;line-height:1.55;white-space:pre-wrap;word-break:break-word;
+  }
+  #fatal[hidden]{display:none}
+
   @media (max-width:380px){
     .stat{min-width:40px;padding:4px 5px}
     .stat b{font-size:14px}
@@ -219,6 +230,34 @@
 </div>
 
 <div id="toast"></div>
+
+<noscript><div class="fatal">Bu oyun JavaScript gerektiriyor.
+Dosyayı Safari veya Chrome'da açın; iOS'ta "Dosyalar" uygulamasının önizlemesi
+JavaScript çalıştırmaz.</div></noscript>
+<div id="fatal" hidden></div>
+
+<script>
+/* Runs before anything else. Two jobs:
+   1. change the placeholder text, which proves scripts execute at all here
+      (on iOS a file opened in Files/Quick Look renders the HTML but never
+      runs JS, and the page just sits on the placeholder)
+   2. surface any startup error on screen, since a phone has no console */
+(function () {
+  var box = document.getElementById('fatal');
+  window.__fatal = function (msg) {
+    if (!box) return;
+    box.hidden = false;
+    box.textContent = 'Başlatılamadı:\n\n' + msg;
+  };
+  window.onerror = function (msg, src, line, col, err) {
+    window.__fatal(msg + '\n\n' + (src || '?') + ' : ' + line + ':' + col +
+                   (err && err.stack ? '\n\n' + err.stack : ''));
+    return false;
+  };
+  var c = document.getElementById('country');
+  if (c) c.textContent = 'Harita hazırlanıyor…';
+})();
+</script>
 
 <div id="end">
   <div id="endCard">
@@ -349,6 +388,10 @@ var decorPath = new Path2D();
     ringsToPath(rr, decorPath);
   }
 })();
+
+if (!countries.length) {
+  throw new Error('map data decoded to 0 countries (embedded JSON looks wrong)');
+}
 
 var byId = {};
 countries.forEach(function (c) { byId[c.id] = c; });
