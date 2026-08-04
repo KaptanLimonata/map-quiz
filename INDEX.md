@@ -2,6 +2,7 @@
 
 ## Durum: TAMAMLANDI (2026-08-04)
 Teslim edilen dosya: `world-map-quiz.html` (205 KB, tek dosya, offline çalışır).
+Repo: https://github.com/KaptanLimonata/map-quiz (private) · main @ 88f2d02
 
 ## Hedef
 Rastgele sorulan ülkeyi dünya haritasında bulma oyunu. Masaüstü, mobil ve iOS Safari.
