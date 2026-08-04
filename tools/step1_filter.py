@@ -58,11 +58,23 @@ TR_OVERRIDE = {
     'Sri Lanka': 'Sri Lanka', 'Burkina Faso': 'Burkina Faso',
 }
 
+# Shorter labels where the formal name overflows the prompt on a phone.
 EN_OVERRIDE = {
     "People's Republic of China": 'China', 'The Bahamas': 'Bahamas',
     'The Gambia': 'Gambia', 'United States of America': 'United States',
     'East Timor': 'Timor-Leste', 'Czech Republic': 'Czechia',
     'Cape Verde': 'Cabo Verde',
+    'Federated States of Micronesia': 'Micronesia',
+    'Democratic Republic of the Congo': 'DR Congo',
+    'Republic of the Congo': 'Congo',
+    'Saint Vincent and the Grenadines': 'St Vincent & Grenadines',
+    'Saint Kitts and Nevis': 'St Kitts & Nevis',
+    'Antigua and Barbuda': 'Antigua & Barbuda',
+    'Trinidad and Tobago': 'Trinidad & Tobago',
+    'Bosnia and Herzegovina': 'Bosnia & Herzegovina',
+    'São Tomé and Príncipe': 'São Tomé & Príncipe',
+    'Central African Republic': 'Central African Rep.',
+    'United Arab Emirates': 'United Arab Emirates',
 }
 
 CONT_TR = {

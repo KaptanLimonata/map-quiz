@@ -61,10 +61,15 @@
     font-size:11px;letter-spacing:.16em;text-transform:uppercase;
     color:var(--accent);font-weight:700;margin-bottom:2px;
   }
+  /* Long names ("Federated States of Micronesia", "Demokratik Kongo
+     Cumhuriyeti") must not get cut off - the prompt is the whole game. The
+     name wraps to at most two lines and fitName() shrinks the type until it
+     fits, so nothing is ever truncated. */
   #country{
-    font-size:clamp(19px,5.4vw,30px);font-weight:800;line-height:1.15;
+    font-size:30px;font-weight:800;line-height:1.14;
     letter-spacing:-.01em;
-    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    max-height:2.28em;overflow:hidden;
+    overflow-wrap:break-word;word-break:normal;hyphens:auto;
   }
   #hintLine{font-size:12px;color:var(--ink-dim);margin-top:3px;height:15px;
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -185,9 +190,15 @@
   }
   #fatal[hidden]{display:none}
 
+  /* Give the prompt more room on phones: the three counters were eating the
+     width the country name needed. */
+  @media (max-width:460px){
+    #stats{gap:6px}
+    .stat{min-width:38px;padding:4px 5px}
+    .stat b{font-size:15px}
+    .stat span{font-size:8px;letter-spacing:.05em}
+  }
   @media (max-width:380px){
-    .stat{min-width:40px;padding:4px 5px}
-    .stat b{font-size:14px}
     #corner{display:none}
   }
   @media (prefers-reduced-motion:reduce){
@@ -429,6 +440,9 @@ function resize() {
   if (cam.s < minS) cam.s = minS;
   clampCam();
   dirty = true;
+
+  var nameEl = document.getElementById('country');
+  if (nameEl && nameEl.textContent) fitName(nameEl);   // rotation changes the fit
 }
 
 function clampCam() {
@@ -974,10 +988,25 @@ function startGame() {
 
 function current() { return queue[qi]; }
 
+/* Shrink the prompt until the whole name fits its two-line box. Starts from the
+   width-based ideal each time so short names stay big. */
+var MAX_NAME_PX = 30, MIN_NAME_PX = 15;
+function fitName(el) {
+  var size = Math.max(MIN_NAME_PX, Math.min(MAX_NAME_PX, W * 0.062));
+  el.style.fontSize = size + 'px';
+  // scrollHeight exceeding clientHeight means a third line was clipped
+  var guard = 0;
+  while (size > MIN_NAME_PX && el.scrollHeight > el.clientHeight + 1 && guard++ < 40) {
+    size -= 1;
+    el.style.fontSize = size + 'px';
+  }
+}
+
 function showQuestion() {
   var c = current();
   if (!c) return;
   document.getElementById('country').textContent = nameOf(c);
+  fitName(document.getElementById('country'));
   document.getElementById('hintLine').textContent = '';
   document.getElementById('label').textContent = STR[LANG].find;
   dirty = true;
