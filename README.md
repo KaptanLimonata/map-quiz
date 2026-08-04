@@ -4,7 +4,13 @@ A single-file world map quiz. It names a country, you tap it on the map.
 Works on desktop, mobile and iOS Safari. No network, no dependencies: the map
 data is embedded in the HTML, so the file runs straight from disk.
 
-**Play:** open [`world-map-quiz.html`](world-map-quiz.html) in any browser.
+**Play:** https://kaptanlimonata.github.io/map-quiz/
+
+Or open [`world-map-quiz.html`](world-map-quiz.html) from disk in any browser.
+
+> On a phone, use the link. Sending the file through a messaging app does not
+> work: WhatsApp and the iOS Files app render the HTML in a preview that never
+> executes JavaScript, so the page just sits on its placeholder text.
 
 ## What it does
 

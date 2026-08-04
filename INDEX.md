@@ -1,8 +1,12 @@
 # World Map Quiz - INDEX
 
 ## Durum: TAMAMLANDI (2026-08-04)
-Teslim: `world-map-quiz.html` (205 KB, tek dosya, offline).
-Repo: https://github.com/KaptanLimonata/map-quiz (private) · main @ 85a4a3c
+Oyna: https://kaptanlimonata.github.io/map-quiz/ (GitHub Pages, main dalından yayınlanıyor)
+Teslim: `world-map-quiz.html` (207 KB, tek dosya, offline da çalışır).
+Repo: https://github.com/KaptanLimonata/map-quiz (public)
+
+Telefonda dosyayı mesajlaşma uygulamasıyla göndermek işe yaramaz; WhatsApp ve iOS
+"Dosyalar" önizlemesi JavaScript çalıştırmaz. Yukarıdaki link kullanılmalı (bkz. history.md).
 
 Rastgele sorulan ülkeyi dünya haritasında bulma oyunu; masaüstü, mobil ve iOS.
 İstenen 9 gereksinimin tamamı karşılandı (özellik listesi: README.md).

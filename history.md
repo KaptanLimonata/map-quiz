@@ -30,3 +30,14 @@ Kök neden: `location.reload()` file:// önbelleğinden eski HTML'i veriyor. Say
 Sorun: Performans 40ms/frame ölçüldü, ama çizim bench'i 0.2ms diyordu.
 Kök neden: Test döngüsü `await sleep(16)` ile ilerliyordu; ölçülen şey setTimeout gecikmesiydi, uygulamanın frame süresi değil.
 Çözüm: Ölçüm ve olay gönderimi `requestAnimationFrame` içinden yapılmalı. Ayrıca boşta rAF aralığı ölçülüp taban çizgisi (bu makinede 7ms/143Hz) doğrulanmalı.
+
+2026-08-04 · iOS'ta sayfa "Yükleniyor…" ekranında donuyordu
+Sorun: Dosya WhatsApp üzerinden iPhone'a gönderilip açılınca yalnızca placeholder metni görünüyordu.
+Kök neden: Kodda hata yoktu. WhatsApp (ve iOS "Dosyalar" uygulaması) HTML dosyasını Quick Look benzeri bir önizleyicide açıyor ve JavaScript çalıştırmıyor; statik HTML render ediliyor, oyunu başlatan kod hiç çalışmıyor.
+Çözüm: Dosyayı mesajlaşma uygulamasıyla dağıtmak yerine web'de yayınla. GitHub Pages açıldı: https://kaptanlimonata.github.io/map-quiz/ (repo public olmak zorunda; ücretsiz planda özel repolarda Pages çalışmaz). Ayrıca teşhis için sayfaya `<noscript>` uyarısı, açılışta placeholder'ı değiştiren bir kanıt satırı ve `window.onerror`'u ekrana basan görünür hata kutusu eklendi.
+Kural: Telefonda konsol yok; JS'in çalışıp çalışmadığını ayırt edecek görünür bir sinyal olmadan bu tür donmalar teşhis edilemez.
+
+2026-08-04 · Tarayıcı sekmesi gizliyken canvas boş ölçülüyor
+Sorun: Canlı sitede harita piksel taraması 0 kara pikseli verdi, hata yokken.
+Kök neden: Önizleme paneli görünmediğinde sayfa `document.hidden = true` olur ve `requestAnimationFrame` hiç ateşlenmez; çizim rAF içinde olduğu için canvas hiç boyanmaz. Kod sağlamdı.
+Çözüm: Görsel doğrulamadan önce `document.hidden` ve rAF'ın ateşlenip ateşlenmediği kontrol edilmeli; sekme öne getirilmeli.
